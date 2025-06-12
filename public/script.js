@@ -97,6 +97,16 @@ function displayPhrasesWithSources(phrases) {
     const container = document.getElementById('phrases-container');
     const resultsSection = document.getElementById('results-section');
 
+    if (!container) {
+        console.error('Phrases container not found!');
+        return;
+    }
+
+    if (!resultsSection) {
+        console.error('Results section not found!');
+        return;
+    }
+
     container.innerHTML = phrases.map((phraseObj, index) => {
         const sourceInfo = phraseObj.sources.map(source => 
             `${source.word} (${source.filename})`
@@ -118,6 +128,7 @@ function displayPhrasesWithSources(phrases) {
 
     resultsSection.style.display = 'block';
     resultsSection.scrollIntoView({ behavior: 'smooth' });
+    console.log('Phrases displayed successfully:', phrases.length);
 }
 
 // ツールチップイベント設定
@@ -268,19 +279,31 @@ function downloadPhrases() {
 // ローディング表示/非表示
 function showLoading(show) {
     const loading = document.getElementById('loading');
-    loading.style.display = show ? 'flex' : 'none';
+    if (loading) {
+        loading.style.display = show ? 'flex' : 'none';
+        console.log('Loading display set to:', show ? 'flex' : 'none');
+    } else {
+        console.error('Loading element not found!');
+    }
 }
 
 // メッセージ表示
 function showMessage(text, type = 'info') {
     const message = document.getElementById('message');
-    message.textContent = text;
-    message.className = `message ${type}`;
-    message.classList.add('show');
+    if (message) {
+        message.textContent = text;
+        message.className = `message ${type}`;
+        message.classList.add('show');
 
-    setTimeout(() => {
-        message.classList.remove('show');
-    }, 3000);
+        setTimeout(() => {
+            message.classList.remove('show');
+        }, 3000);
+        console.log('Message displayed:', text, type);
+    } else {
+        console.error('Message element not found!');
+        // フォールバック: alertを使用
+        alert(text);
+    }
 }
 
 // エラーハンドリング
