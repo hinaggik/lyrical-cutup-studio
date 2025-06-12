@@ -14,13 +14,33 @@ function initializeApp() {
 
 // イベントリスナー設定
 function setupEventListeners() {
+    console.log('Setting up event listeners...');
+    
     const generateBtn = document.getElementById('generate-btn');
     const copyAllBtn = document.getElementById('copy-all-btn');
     const downloadBtn = document.getElementById('download-btn');
 
-    generateBtn.addEventListener('click', generateCutup);
-    copyAllBtn.addEventListener('click', copyAllPhrases);
-    downloadBtn.addEventListener('click', downloadPhrases);
+    console.log('Generate button found:', generateBtn);
+    console.log('Copy all button found:', copyAllBtn);
+    console.log('Download button found:', downloadBtn);
+
+    if (generateBtn) {
+        generateBtn.addEventListener('click', function() {
+            console.log('Generate button clicked!');
+            generateCutup();
+        });
+        console.log('Generate button event listener added');
+    } else {
+        console.error('Generate button not found!');
+    }
+
+    if (copyAllBtn) {
+        copyAllBtn.addEventListener('click', copyAllPhrases);
+    }
+
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', downloadPhrases);
+    }
 }
 
 // カットアップ生成
