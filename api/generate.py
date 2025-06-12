@@ -7,6 +7,66 @@ import os
 from pathlib import Path
 
 class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        try:
+            # CORS headers
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            
+            # Test database connection
+            db_path = get_database_path()
+            db_exists = os.path.exists(db_path)
+            
+            if db_exists:
+                try:
+                    conn = sqlite3.connect(db_path)
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT COUNT(*) FROM lyrics")
+                    lyrics_count = cursor.fetchone()[0]
+                    cursor.execute("SELECT COUNT(*) FROM phrases")
+                    phrases_count = cursor.fetchone()[0]
+                    conn.close()
+                    
+                    response = {
+                        "status": "API is working",
+                        "database_path": db_path,
+                        "database_exists": True,
+                        "lyrics_count": lyrics_count,
+                        "phrases_count": phrases_count,
+                        "method": "GET - Test endpoint"
+                    }
+                except Exception as db_error:
+                    response = {
+                        "status": "Database error",
+                        "database_path": db_path,
+                        "database_exists": True,
+                        "error": str(db_error),
+                        "method": "GET - Test endpoint"
+                    }
+            else:
+                response = {
+                    "status": "Database not found",
+                    "database_path": db_path,
+                    "database_exists": False,
+                    "method": "GET - Test endpoint"
+                }
+            
+            self.wfile.write(json.dumps(response, ensure_ascii=False).encode('utf-8'))
+            
+        except Exception as e:
+            self.send_response(500)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            
+            error_response = {
+                "error": f"GET error: {str(e)}",
+                "method": "GET - Test endpoint"
+            }
+            self.wfile.write(json.dumps(error_response, ensure_ascii=False).encode('utf-8'))
+
     def do_POST(self):
         try:
             # CORS headers
