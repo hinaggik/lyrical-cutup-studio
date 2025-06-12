@@ -57,9 +57,9 @@ class handler(BaseHTTPRequestHandler):
 
 def get_database_path():
     """Get the path to the database file"""
-    # In Vercel, the database should be in the same directory structure
+    # In Vercel, the database should be in the same directory as the function
     current_dir = Path(__file__).parent
-    db_path = current_dir.parent / 'data' / 'lyrics.db'
+    db_path = current_dir / 'lyrics.db'
     return str(db_path)
 
 def generate_cutup_phrases(count: int) -> list:
