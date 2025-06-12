@@ -32,9 +32,11 @@ async function generateCutup() {
         return;
     }
 
+    console.log('Starting phrase generation with count:', count);
     showLoading(true);
 
     try {
+        console.log('Sending request to /api/generate');
         const response = await fetch('/api/generate', {
             method: 'POST',
             headers: {
@@ -43,11 +45,16 @@ async function generateCutup() {
             body: JSON.stringify({ count: count })
         });
 
+        console.log('Response received:', response.status, response.statusText);
+
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error('Response error text:', errorText);
+            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
         }
 
         const result = await response.json();
+        console.log('Response data:', result);
 
         if (result.error) {
             throw new Error(result.error);
